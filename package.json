@@ -1,0 +1,28 @@
+{
+  "name": "API-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/Khawlaowl/API-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Khawlaowl/API-project/issues"
+  },
+  "homepage": "https://github.com/Khawlaowl/API-project#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.3.1",
+    "stripe": "^16.7.0"
+  }
+}
