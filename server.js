@@ -18,7 +18,7 @@ app.post('/create-checkout-session/:product', async (req, res) => {
 
 
     if (product === 'sub') {
-        price_ID = 'price_1MfByvBFgNlxkXGn6Cgrn3iF'
+        price_ID = 'price_1Pm0xoLjrDgK1ySlwVn9b0Le'
         mode = 'subscription'
         line_items = [
             {
@@ -27,7 +27,7 @@ app.post('/create-checkout-session/:product', async (req, res) => {
         ]
         quantity_type = 'subscription'
     } else if (product === 'pre') {
-        price_ID = 'price_1MfBxpBFgNlxkXGnTdv95Yfd'
+        price_ID = 'price_1Pm11yLjrDgK1ySloKqxKup7'
         mode = 'payment'
         line_items = [
             {
