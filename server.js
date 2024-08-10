@@ -106,8 +106,7 @@ app.post('/create-checkout-session/:product', async (req, res) => {
 
 
     if (product === 'sub') {
-        price_ID = 'price_1Pm0xoLjrDgK1ySlwVn9b0Le
-'
+        price_ID = 'price_1Pm0xoLjrDgK1ySlwVn9b0Le'
         mode = 'subscription'
         line_items = [
             {
