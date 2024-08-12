@@ -24,7 +24,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(to right, #000428, #000046);
+            background: linear-gradient(to right, #000428, #ffffff);
             color: white;
             display: flex;
             flex-direction: column;
@@ -338,27 +338,6 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="headerContainer">
-            <h1>My Cool API</h1>
-            <a class="first" href="https://github.com/jamezmca" target="_blank">
-                <i class="fa-solid fa-book"></i>
-                Docs
-            </a>
-        </div>
-
-        <section>
-            <h2 class="subHeader">Description</h2>
-            <div class="info">
-                <h3>Purpose</h3>
-                <p>To encourage everyone to become a great developer!</p>
-            </div>
-            <div class="info">
-                <h3>Author</h3>
-                <p>Smoljames</p>
-            </div>
-        </section>
-
         <section>
             <h2 class="subHeader">Check Key Status</h2>
             <p class="preMsg">Please enter your API Key below to check it's status</p>
@@ -502,7 +481,7 @@
             return
         }
         try {
-            const res = await fetch('http://http://34.204.186.114:8080/check_status?api_key=' + user_api_key)
+            const res = await fetch('http://http://localhost:1337/check_status?api_key=' + user_api_key)
             const { status } = await res.json()
             console.log('STATUS IS: ', status)
             if (status === "API Key does not exist") {
@@ -547,7 +526,7 @@
             return
         }
         try {
-            const res = await fetch('http://http://34.204.186.114:8080/delete?api_key=' + user_api_key)
+            const res = await fetch('http://http://localhost:1337/delete?api_key=' + user_api_key)
             statusUpdate.innerHTML = (
                 `<div class="info">
                         <h3>Current Status </h3>
