@@ -24,7 +24,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(to right, #000428, #ffffff);
+            background: linear-gradient(to right, #000428, #550a43);
             color: white;
             display: flex;
             flex-direction: column;
@@ -52,7 +52,7 @@
         .addKey {
             color: white;
             text-decoration: none;
-            background: hsla(200, 80%, 50%, 0.4);
+            background: hsla(295, 58%, 56%, 0.558);
             border-radius: 4px;
             padding: 8px 16px;
             gap: 8px;
@@ -72,7 +72,7 @@
         .headerContainer a:hover,
         .updateBtn:hover,
         .addKey:hover {
-            background: hsla(220, 80%, 50%, 0.8);
+            background: hsla(309, 80%, 50%, 0.8);
         }
 
         .first {
@@ -96,7 +96,7 @@
         }
 
         .info h3 {
-            color: cyan;
+            color: rgb(212, 173, 235);
             font-weight: 500;
         }
 
@@ -140,11 +140,11 @@
             gap: 8px;
             width: 100%;
             margin-top: 8px;
-            border: 1px solid navy;
+            border: 1px solid rgb(243, 243, 244);
         }
 
         .keyInput:focus-within {
-            border-color: blue;
+            border-color: rgb(255, 255, 255);
         }
 
         .keyInput input {
@@ -222,7 +222,7 @@
 
         .activePlan2 p,
         .activePlan2 i {
-            text-shadow: 0 0 10px navy;
+            text-shadow: 0 0 10px rgb(207, 207, 214);
         }
 
         .currPlan {
@@ -338,6 +338,11 @@
 </head>
 
 <body>
+    <div class="container">
+        <div class="headerContainer">
+            <h1>API</h1>
+        </div>
+
         <section>
             <h2 class="subHeader">Check Key Status</h2>
             <p class="preMsg">Please enter your API Key below to check it's status</p>
@@ -481,7 +486,7 @@
             return
         }
         try {
-            const res = await fetch('http://http://localhost:1337/check_status?api_key=' + user_api_key)
+            const res = await fetch('http://localhost:1337/check_status?api_key=' + user_api_key)
             const { status } = await res.json()
             console.log('STATUS IS: ', status)
             if (status === "API Key does not exist") {
@@ -526,7 +531,7 @@
             return
         }
         try {
-            const res = await fetch('http://http://localhost:1337/delete?api_key=' + user_api_key)
+            const res = await fetch('http://localhost:1337/delete?api_key=' + user_api_key)
             statusUpdate.innerHTML = (
                 `<div class="info">
                         <h3>Current Status </h3>
