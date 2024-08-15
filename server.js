@@ -19,12 +19,12 @@ app.get('/api', async (req, res) => {
     const { api_key } = req.query
     if (!api_key) { return res.sendStatus(403) }
     let paid_status, type
-    const doc = await db.collection('/api_keys').doc(api_key).get()
+    const doc = await db.collection('api_keys').doc(api_key).get()
     if (!doc.exists) {
         res.status(403).send({ 'status': "API Key is invalid" })
     } else {
         const { status, type, stripeCustomerId } = doc.data()
-        if (status === 8 ) {
+        if (status === 'subscription' ) {
             paid_status = true
             const customer = await stripe.customers.retrieve(
                 stripeCustomerId,
@@ -39,18 +39,18 @@ app.get('/api', async (req, res) => {
 
             const record = stripe.subscriptionItems.createUsageRecord(
                 itemId, {
-                quantity: 1,
+                
                 timestamp: 'now',
                 action: 'increment'
             }
             )
             console.log('record created')
-        } else if (status = 10 ) {
+        } else if (status > 0 ) {
             paid_status = true
             const data = {
-                status: status - 1 //subscription or 8
+                status: status - 1 
             }
-            const dbRes = await db.collection('/api_keys').doc(api_key).set(data, { merge: true })
+            const dbRes = await db.collection('api_keys').doc(api_key).set(data, { merge: true })
         }
 
     }
@@ -62,7 +62,7 @@ app.get('/api', async (req, res) => {
 });
 app.get('/check_status', async (req, res) => {
     const { api_key } = req.query
-    const doc = await db.collection('/api_keys').doc(api_key).get()
+    const doc = await db.collection('api_keys').doc(api_key).get()
     if (!doc.exists) {
         res.status(400).send({ 'status': "API Key does not exist" })
     } else {
@@ -72,24 +72,25 @@ app.get('/check_status', async (req, res) => {
 })
 app.get('/delete', async (req, res) => {
     const { api_key } = req.query
-    const doc = await db.collection('/api_keys').doc(api_key).get()
+    const doc = await db.collection('api_keys').doc(api_key).get()
     if (!doc.exists) {
         res.status(400).send({ 'status': "API Key does not exist" })
     } else {
         const { stripeCustomerId } = doc.data()
+        
         try {
             const customer = await stripe.customers.retrieve(
                 stripeCustomerId,
                 { expand: ['subscriptions'] }
             )
-            console.log(customer)
-            let subscriptionId = customer?.subscriptions?.data?.[0]?.id
+            console.log(customer);
+            let subscriptionId = customer?.subscriptions?.data?.[0]?.id;
             stripe.subscriptions.del(subscriptionId)
 
             const data = {
-                status: null //subscription or 8
+                status: null 
             }
-            const dbRes = await db.collection('/api_keys').doc(api_key).set(data, { merge: true })
+            const dbRes = await db.collection('api_keys').doc(api_key).set(data, { merge: true })
         } catch (err) {
             console.log(err.msg)
             return res.sendStatus(500)
@@ -103,15 +104,15 @@ app.post('/create-checkout-session/:product', async (req, res) => {
     let mode, price_ID, line_items, quantity_type;
 
     if (product === 'sub') {
-        price_ID = 'price_1Po4slDGX23YpF2sdJJcwujE';
-        mode = 'subscription';
+        price_ID = 'price_1Po4slDGX23YpF2sdJJcwujE'
+        mode = 'subscription'
         line_items = [
-            {
+             {
                 price: price_ID,
-                quantity: 1
+                quantity: 1,
             }
-        ];
-        quantity_type = 8;//subscription
+        ]
+        quantity_type = 'subscription'
     } else if (product === 'pre') {
         price_ID = 'price_1Po4v3DGX23YpF2stcGqe2oP';
         mode = 'payment';
@@ -140,7 +141,6 @@ app.post('/create-checkout-session/:product', async (req, res) => {
             APIkey: newAPIKey,
             payment_type: product
         },
-        payment_method_types: ['card'], // Specify supported payment methods
         line_items: line_items,
         mode: mode,
         success_url: `${DOMAIN}/success.html?api_key=${newAPIKey}`,
@@ -155,35 +155,13 @@ app.post('/create-checkout-session/:product', async (req, res) => {
         stripeCustomerId,
         status: quantity_type // subscription or 8
     };
-    const dbRes = await db.collection('/api_keys').doc(newAPIKey).set(data, { merge: true });
+    const dbRes = await db.collection('api_keys').doc(newAPIKey).set(data, { merge: true });
 
 
     res.redirect(303, session.url);
 });
 
 
-app.post('/stripe_webhook', async (req, res) => {
-    const event = req.body;
 
-    try {
-        switch (event.type) {
-            case 'checkout.session.completed':
-                const session = event.data.object;
-                await saveCheckoutSession(session);
-                break;
-            case 'customer.created':
-                const customer = event.data.object;
-                await saveCustomer(customer);
-                break;
-            // Handle other events
-            default:
-                console.warn(`Unhandled event type ${event.type}`);
-        }
-        res.status(200).end();
-    } catch (error) {
-        console.error('Error handling webhook event:', error);
-        res.status(500).end();
-    }
-});
 
 app.listen(PORT, () => console.log(`Server has started on port: ${PORT}`))
