@@ -127,7 +127,11 @@ app.post('/create-checkout-session/:product', async (req, res) => {
         return res.sendStatus(403);
     }
 
-    const newAPIKey = generateApiKey();
+    const newAPIKey = generateApiKey({
+        method: 'string',
+        pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~' // Exclude slashes
+    });
+
     const customer = await stripe.customers.create({
         metadata: {
             APIkey: newAPIKey
@@ -146,22 +150,28 @@ app.post('/create-checkout-session/:product', async (req, res) => {
         success_url: `${DOMAIN}/success.html?api_key=${newAPIKey}`,
         cancel_url: `${DOMAIN}/cancel.html`,
     });
-    console.log(session);
-
-    // Create Firebase record
-    const data = {
-        APIkey: newAPIKey,
-        payment_type: product,
-        stripeCustomerId,
-        status: quantity_type // subscription or 8
-    };
-    const dbRes = await db.collection('api_keys').doc(newAPIKey).set(data, { merge: true });
-
-
-    res.redirect(303, session.url);
+    try {
+        // Create Firebase record
+        const data = {
+            APIkey: newAPIKey,
+            payment_type: product,
+            stripeCustomerId,
+            status: quantity_type // subscription or 8
+        };
+    
+        console.log('Saving the following data to Firestore:', data);
+    
+        const dbRes = await db.collection('api_keys').doc(newAPIKey).set(data, { merge: true });
+    
+        console.log('Firestore response:', dbRes);
+    
+        // Redirect to session URL (e.g., Stripe checkout session)
+        res.redirect(303, session.url);
+    } catch (err) {
+        console.error('Error saving data to Firestore:', err.message);
+        res.status(500).send('Failed to create API key record');
+    }
+    
 });
-
-
-
 
 app.listen(PORT, () => console.log(`Server has started on port: ${PORT}`))
